@@ -12,6 +12,7 @@ const postsRouter = require('./routes/posts.routes')
 const usersRouter = require('./routes/users.routes')
 const moviesRouter = require('./routes/movies.routes')
 const sunbscribesRouter = require('./routes/subscribes.routes')
+const frontendAuth = require('./helpers/frontendAuth')
 
 //middlewares
 const verifyToken = require('./auth/verifyToken')
@@ -39,8 +40,9 @@ app.use('/', indexRouter);
 app.use('/', usersRouter);
 app.use('/', moviesRouter);
 app.use('/', sunbscribesRouter)
-// app.use('/', verifyToken, postsRouter) // with auth
-app.use('/', postsRouter)
+app.use('/', verifyToken, postsRouter) // with auth
+app.use('/', frontendAuth)
+// app.use('/', postsRouter)
 
 
 // catch 404 and forward to error handler

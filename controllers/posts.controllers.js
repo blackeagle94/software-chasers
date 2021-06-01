@@ -4,32 +4,33 @@ exports.getAll = async (req, res) => {
     try {
         const {page = 1, limit=5} = req.query
         const response = await PostsModel.find().limit(limit * 1).skip((page - 1) * limit)
-        res.json({total:response.length, response})
+        const pages = await PostsModel.find()
+        res.json({total:response.length, totalPages: (Math.ceil(pages.length / limit)), response})
     } catch (e) {
         res.status(500).json(e)
     }
-    const {page = 1, limit=5} = req.query
-    PostsModel.aggregate([
-        {
-            $skip: (page -1) * limit
-        },
-        {
-            $limit:limit*1
-        },
-        {
-            $project: {title:true, author: 1, userId:true}
-        },
-        {
-            $sort: {title: -1}
-        }
+    // const {page = 1, limit=5} = req.query
+    // PostsModel.aggregate([
+    //     {
+    //         $skip: (page -1) * limit
+    //     },
+    //     {
+    //         $limit:limit*1
+    //     },
+    //     {
+    //         $project: {title:true, author: 1, userId:true}
+    //     },
+    //     {
+    //         $sort: {title: -1}
+    //     }
        
-    ], (err, result) => {
-        if(err) {
-            res.status(500).json(err)
-        } else {
-            res.json({total:result.length, result})
-        }
-    })
+    // ], (err, result) => {
+    //     if(err) {
+    //         res.status(500).json(err)
+    //     } else {
+    //         res.json({total:result.length, result})
+    //     }
+    // })
 }
 
 exports.create = async (req, res) => {

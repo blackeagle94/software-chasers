@@ -1,17 +1,18 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import {Link} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 // import LockOutlinedIcon from '@material-ui/core/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import axios from 'axios';
 
 function Copyright() {
   return (
@@ -46,8 +47,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Login() {
+export default function Login({setIsLoggedin}) {
   const classes = useStyles();
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const history = useHistory()
+
+  const login = e => {
+    e.preventDefault()
+    axios.post('http://localhost:5000/users/login', {email, password})
+      .then(res => {
+        if(res.data.status) {
+          sessionStorage.setItem('info', JSON.stringify(res.data))
+          sessionStorage.setItem('token', JSON.stringify(res.data.token))
+          setIsLoggedin(true)
+          history.push('/')
+        } else {
+          document.getElementById('login-success').innerText = res.data.message
+        }
+      }).catch(err => console.log(err))
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -59,7 +78,9 @@ export default function Login() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        <Typography component="h5" variant="h5" id="login-success">
+        </Typography>
+        <form className={classes.form} onSubmit={login} >
           <TextField
             margin="normal"
             required
@@ -69,6 +90,8 @@ export default function Login() {
             name="email"
             autoComplete="email"
             autoFocus
+            value={email}
+            onChange={e => setEmail(e.target.value)}
           />
           <TextField
             margin="normal"
@@ -79,6 +102,8 @@ export default function Login() {
             type="password"
             id="password"
             autoComplete="current-password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}

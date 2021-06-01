@@ -16,7 +16,7 @@ const Movies = () => {
 			.then((data) => setMovies(data.data.response))
 			.catch((err) => console.log(err));
 	}, []);
-	console.log(movies);
+
 	return (
 		<div className="container">
 			<div className="d-block">
