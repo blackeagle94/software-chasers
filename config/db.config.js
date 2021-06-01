@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
+require('dotenv').config()
 
 module.exports = () => {
 	mongoose.connect(
-		'mongodb+srv://blackeagle4894:blackeagle4894@blackeagle4894.uyz3k.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {useNewUrlParser:true, useUnifiedTopology: true, useCreateIndex:true }
+		process.env.db_connection, {useNewUrlParser:true, useUnifiedTopology: true, useCreateIndex:true }
 	);
 
 	mongoose.connection.on('open', () => {
